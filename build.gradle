@@ -1,7 +1,15 @@
 plugins {
 	id 'org.springframework.boot' version '2.7.0'
+	id "org.flywaydb.flyway" version "8.5.12"
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+}
+
+flyway {
+	driver = "org.postgresql.Driver"
+	url = 'dbc:postgresql://localhost:5432/todo'
+	user = 'postgres'
+	password = 'root'
 }
 
 group = 'com.example'
@@ -15,7 +23,6 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.flywaydb:flyway-core'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
