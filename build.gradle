@@ -7,7 +7,7 @@ plugins {
 
 flyway {
 	driver = "org.postgresql.Driver"
-	url = 'dbc:postgresql://localhost:5432/todo'
+	url = 'dbc:postgresql://localhost:5432/Todo'
 	user = 'postgres'
 	password = 'root'
 }
