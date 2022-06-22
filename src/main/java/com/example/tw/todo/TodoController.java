@@ -1,4 +1,5 @@
 package com.example.tw.todo;
+import com.example.tw.todo.exceptions.TaskDoesNotExistInTheList;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,16 +25,34 @@ public class TodoController {
 //        @ApiResponses(code = 200, message = "Successfully get the response"),
 //        @ApiResponses(code = 400, message = "Error while fetching data")
 //    })
-    public List<Todo> getTask(){
+    public List<Todo> getTodo(){
         return todoService.getList();
     }
 
-    @PostMapping("/addTask")
-    public ResponseEntity<?>  addTask(@Validated @RequestBody Todo todo){
+    @GetMapping("/getTodo/{todoId}")
+    public Todo getTodoById(@PathVariable long todoId) throws TaskDoesNotExistInTheList {
+        if(!todoService.validateTodoId(todoId)){
+            throw new TaskDoesNotExistInTheList();
+        }
+        return todoService.getTaskById(todoId);
+    }
+
+    @PostMapping("/addTodo")
+    public ResponseEntity<?>  addTodo(@Validated @RequestBody Todo todo){
         if(todo.getId() > 0){
-            todoService.addTask(todo);
+            todoService.addTodo(todo);
             return new ResponseEntity<>("Task has been added", HttpStatus.CREATED);
         }
         return new ResponseEntity<>("Invalid task", HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/deleteTodo/{todoId}")
+    public ResponseEntity<?> deleteTodo(@PathVariable long todoId) throws TaskDoesNotExistInTheList {
+        if(!todoService.validateTodoId(todoId)){
+            throw new TaskDoesNotExistInTheList();
+        }
+        Todo task = todoService.getTaskById(todoId);
+        todoService.deleteTodo(task);
+        return new ResponseEntity<>("Task has been deleted successfully", HttpStatus.OK);
     }
 }

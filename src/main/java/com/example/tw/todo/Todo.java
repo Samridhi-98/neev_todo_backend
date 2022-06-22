@@ -21,9 +21,9 @@ public class Todo {
     @Column(name = "description", length = 255, nullable = true)
     private String description;
 
-    @Column(name="isCompleted")
+    @Column(name="is_completed")
     @Value("false")
-    private Boolean isCompleted;
+    private Boolean is_completed;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -53,11 +53,11 @@ public class Todo {
     }
 
     public Boolean getCompleted() {
-        return isCompleted;
+        return is_completed;
     }
 
     public void setCompleted(Boolean completed) {
-        isCompleted = completed;
+        is_completed = completed;
     }
 
     public Date getCreatedAt() {
