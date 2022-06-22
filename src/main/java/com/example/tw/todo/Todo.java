@@ -71,4 +71,9 @@ public class Todo {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public Date getUpdatedAt(){
+        return updatedAt;
+    }
+
 }

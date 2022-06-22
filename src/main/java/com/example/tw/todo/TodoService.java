@@ -51,4 +51,12 @@ public class TodoService {
     public Boolean validateTodoId(long id){
         return todoRepository.existsById(id);
     }
+
+    public Long countOfTodo(){
+        return todoRepository.count();
+    }
+
+    public Boolean compareUpdatedTodoWithPreviousTodo(Todo currentTodo, Todo previousTodo){
+        return currentTodo.getUpdatedAt() == previousTodo.getUpdatedAt();
+    }
 }

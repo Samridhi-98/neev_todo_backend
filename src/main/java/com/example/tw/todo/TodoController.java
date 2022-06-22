@@ -20,7 +20,7 @@ public class TodoController {
         this.todoService = todoService;
     }
 
-    @GetMapping("/getTask")
+    @GetMapping("/getTodo")
 //    @ApiResponses(value = {
 //        @ApiResponses(code = 200, message = "Successfully get the response"),
 //        @ApiResponses(code = 400, message = "Error while fetching data")
@@ -38,9 +38,10 @@ public class TodoController {
     }
 
     @PostMapping("/addTodo")
-    public ResponseEntity<?>  addTodo(@Validated @RequestBody Todo todo){
-        if(todo.getId() > 0){
-            todoService.addTodo(todo);
+    public ResponseEntity<?> addTodo(@Validated @RequestBody Todo todo){
+        todoService.addTodo(todo);
+        Long initialCount = todoService.countOfTodo();;
+        if(initialCount + 1 == todoService.countOfTodo() ){
             return new ResponseEntity<>("Task has been added", HttpStatus.CREATED);
         }
         return new ResponseEntity<>("Invalid task", HttpStatus.BAD_REQUEST);
@@ -52,7 +53,24 @@ public class TodoController {
             throw new TaskDoesNotExistInTheList();
         }
         Todo task = todoService.getTaskById(todoId);
+        Long initialCount = todoService.countOfTodo();
         todoService.deleteTodo(task);
-        return new ResponseEntity<>("Task has been deleted successfully", HttpStatus.OK);
+        if(initialCount - 1 == todoService.countOfTodo()){
+            return new ResponseEntity<>("Task has been deleted successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Unable to delete the task", HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/updateTodo/{todoId}")
+    public ResponseEntity<?> updateTodo(@PathVariable long todoId) throws TaskDoesNotExistInTheList {
+        if(!todoService.validateTodoId(todoId)){
+            throw new TaskDoesNotExistInTheList();
+        }
+        Todo task = todoService.getTaskById(todoId);
+        Todo updatedTask = todoService.updateTodo(task);
+        if(todoService.compareUpdatedTodoWithPreviousTodo(updatedTask, task)){
+            return new ResponseEntity<>("Task has been updated successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Update request failed", HttpStatus.EXPECTATION_FAILED);
     }
 }
