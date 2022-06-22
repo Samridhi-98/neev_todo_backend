@@ -2,6 +2,7 @@ package com.example.tw.todo;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,6 +22,7 @@ public class Todo {
     private String description;
 
     @Column(name="isCompleted")
+    @Value("false")
     private Boolean isCompleted;
 
     @CreationTimestamp
