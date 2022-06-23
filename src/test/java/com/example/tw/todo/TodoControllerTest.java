@@ -65,10 +65,6 @@ public class TodoControllerTest {
         Todo task = todo.get(0);
         Mockito.when(todoService.getTaskById(1)).thenReturn(task);
 
-        System.out.println("Task title: " + task.getTitle());
-        System.out.println("Task id: " + task.getId());
-        System.out.println("Todo size: " + todoService.getTaskById(1).toString());
-
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/v1/todo/getTodo/1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -79,6 +75,8 @@ public class TodoControllerTest {
 
     @Test
     public void shouldAbleToAddTheTodo(){
+        Todo task = new Todo(5,"Grocery", "working for 9-5",false);
+//        Mockito.when(todoService.addTodo(task)).then(todo.size() == 5);
 
     }
 

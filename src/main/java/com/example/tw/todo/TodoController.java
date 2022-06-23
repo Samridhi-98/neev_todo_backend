@@ -1,5 +1,6 @@
 package com.example.tw.todo;
 import com.example.tw.todo.exceptions.TaskDoesNotExistInTheList;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,9 @@ public class TodoController {
     @PostMapping("/addTodo")
     public ResponseEntity<?> addTodo(@Validated @RequestBody Todo todo){
         Long initialCount = todoService.countOfTodo();
+
+        System.out.println("controller add todo: "+ todo);
+
         todoService.addTodo(todo);
 
         if(initialCount + 1 == todoService.countOfTodo() ){
@@ -66,19 +70,18 @@ public class TodoController {
 
     @PutMapping("/updateTodo/{todoId}")
     public ResponseEntity<?> updateTodo(@PathVariable long todoId, @RequestBody Todo todo) throws TaskDoesNotExistInTheList {
-        if(!todoService.validateTodoId(todoId)){
-            throw new TaskDoesNotExistInTheList();
-        }
+        try{
+            if(!todoService.validateTodoId(todoId)){
+                throw new TaskDoesNotExistInTheList();
+            }
 
-        Todo currentTask = todoService.getTaskById(todoId);
-        Todo updatedTask = todoService.updateTodo(todoId,todo);
+            Todo currentTask = todoService.getTaskById(todoId);
+            Todo updatedTask = todoService.updateTodo(todoId,todo);
 
-        System.out.println("task current: "+ currentTask);
-        System.out.println("task updated: "+ updatedTask);
-
-        if(todoService.compareUpdatedTodoWithPreviousTodo(updatedTask, currentTask)){
             return new ResponseEntity<>("Task has been updated successfully", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Update request failed", HttpStatus.EXPECTATION_FAILED);
+        catch (Exception e){
+            return new ResponseEntity<>("Failed to update the todo", HttpStatus.BAD_REQUEST);
+        }
     }
 }

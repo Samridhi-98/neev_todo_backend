@@ -19,6 +19,9 @@ public class TodoService {
     public List<Todo> getList(){
         List<Todo> tasks = new ArrayList<>();
         for (Todo todo : todoRepository.findAll()) {
+
+            System.out.println("get todo list: "+ todo);
+
             tasks.add(todo);
         }
         return tasks;
@@ -38,12 +41,13 @@ public class TodoService {
 
     public Todo updateTodo(Long todoId, Todo updateTodo){
         Todo currentTask = todoRepository.findById(todoId).get();
+
         currentTask.setTitle(updateTodo.getTitle());
-        if(updateTodo.getDescription().length() > 0){
-            currentTask.setDescription((updateTodo.getDescription()));
-        }
-        currentTask.setCompleted(updateTodo.getCompleted() ? updateTodo.getCompleted() : currentTask.getCompleted());
+        currentTask.setDescription((updateTodo.getDescription()));
+        currentTask.setCompleted(updateTodo.getCompleted());
+
         todoRepository.save(currentTask);
+
         return currentTask;
     }
 
@@ -55,7 +59,4 @@ public class TodoService {
         return todoRepository.count();
     }
 
-    public Boolean compareUpdatedTodoWithPreviousTodo(Todo currentTodo, Todo previousTodo){
-        return currentTodo.getUpdatedAt() == previousTodo.getUpdatedAt();
-    }
 }

@@ -23,7 +23,7 @@ public class Todo {
 
     @Column(name="is_completed")
     @Value("false")
-    private Boolean is_completed;
+    private Boolean completed;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -35,19 +35,19 @@ public class Todo {
     public Todo(){
     }
 
-    public Todo(long id, String title, String description, Boolean is_completed) {
+    public Todo(long id, String title, String description, Boolean completed) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.is_completed = is_completed;
+        this.completed = completed;
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(String title) {
@@ -55,7 +55,7 @@ public class Todo {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {
@@ -63,15 +63,15 @@ public class Todo {
     }
 
     public Boolean getCompleted() {
-        return is_completed;
+        return this.completed;
     }
 
     public void setCompleted(Boolean completed) {
-        is_completed = completed;
+        this.completed = completed;
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
@@ -83,7 +83,7 @@ public class Todo {
     }
 
     public Date getUpdatedAt(){
-        return updatedAt;
+        return this.updatedAt;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class Todo {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", is_completed=" +  is_completed+
+                ", completed=" + completed +
                 '}';
     }
 }
