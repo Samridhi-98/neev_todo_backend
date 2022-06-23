@@ -32,6 +32,9 @@ public class Todo {
     @UpdateTimestamp
     protected Date updatedAt;
 
+    public Todo(){
+    }
+
     public Todo(long id, String title, String description, Boolean is_completed) {
         this.id = id;
         this.title = title;
@@ -83,4 +86,13 @@ public class Todo {
         return updatedAt;
     }
 
+    @Override
+    public String toString() {
+        return '{' +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", is_completed=" +  is_completed+
+                '}';
+    }
 }

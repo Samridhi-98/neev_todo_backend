@@ -38,8 +38,9 @@ public class TodoController {
 
     @PostMapping("/addTodo")
     public ResponseEntity<?> addTodo(@Validated @RequestBody Todo todo){
+        Long initialCount = todoService.countOfTodo();
         todoService.addTodo(todo);
-        Long initialCount = todoService.countOfTodo();;
+
         if(initialCount + 1 == todoService.countOfTodo() ){
             return new ResponseEntity<>("Task has been added", HttpStatus.CREATED);
         }
@@ -51,9 +52,12 @@ public class TodoController {
         if(!todoService.validateTodoId(todoId)){
             throw new TaskDoesNotExistInTheList();
         }
+
         Todo task = todoService.getTaskById(todoId);
         Long initialCount = todoService.countOfTodo();
+
         todoService.deleteTodo(task);
+
         if(initialCount - 1 == todoService.countOfTodo()){
             return new ResponseEntity<>("Task has been deleted successfully", HttpStatus.OK);
         }
@@ -61,13 +65,18 @@ public class TodoController {
     }
 
     @PutMapping("/updateTodo/{todoId}")
-    public ResponseEntity<?> updateTodo(@PathVariable long todoId) throws TaskDoesNotExistInTheList {
+    public ResponseEntity<?> updateTodo(@PathVariable long todoId, @RequestBody Todo todo) throws TaskDoesNotExistInTheList {
         if(!todoService.validateTodoId(todoId)){
             throw new TaskDoesNotExistInTheList();
         }
-        Todo task = todoService.getTaskById(todoId);
-        Todo updatedTask = todoService.updateTodo(task);
-        if(todoService.compareUpdatedTodoWithPreviousTodo(updatedTask, task)){
+
+        Todo currentTask = todoService.getTaskById(todoId);
+        Todo updatedTask = todoService.updateTodo(todoId,todo);
+
+        System.out.println("task current: "+ currentTask);
+        System.out.println("task updated: "+ updatedTask);
+
+        if(todoService.compareUpdatedTodoWithPreviousTodo(updatedTask, currentTask)){
             return new ResponseEntity<>("Task has been updated successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Update request failed", HttpStatus.EXPECTATION_FAILED);

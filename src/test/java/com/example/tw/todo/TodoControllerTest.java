@@ -51,7 +51,6 @@ public class TodoControllerTest {
 
     @Test
     public void shouldAbleToGetAllTheTodo() throws Exception {
-
         Mockito.when(todoService.getList()).thenReturn(todo);
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/v1/todo/getTodo")
@@ -62,8 +61,20 @@ public class TodoControllerTest {
     }
 
     @Test
-    public void shouldAbleToGetTodoById(){
+    public void shouldAbleToGetTodoById() throws Exception {
+        Todo task = todo.get(0);
+        Mockito.when(todoService.getTaskById(1)).thenReturn(task);
 
+        System.out.println("Task title: " + task.getTitle());
+        System.out.println("Task id: " + task.getId());
+        System.out.println("Todo size: " + todoService.getTaskById(1).toString());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/v1/todo/getTodo/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title",is(equalTo(task.getTitle())))
+        );
     }
 
     @Test

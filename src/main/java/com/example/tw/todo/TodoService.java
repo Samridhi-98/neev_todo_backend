@@ -36,20 +36,19 @@ public class TodoService {
         todoRepository.delete(todo);
     }
 
-    public Todo updateTodo(Todo todo){
-        Todo updateTask = todoRepository.findById(todo.getId()).get();
-        updateTask.setTitle(todo.getTitle());
-        if(todo.getDescription().length() > 0){
-            updateTask.setDescription((todo.getDescription()));
+    public Todo updateTodo(Long todoId, Todo updateTodo){
+        Todo currentTask = todoRepository.findById(todoId).get();
+        currentTask.setTitle(updateTodo.getTitle());
+        if(updateTodo.getDescription().length() > 0){
+            currentTask.setDescription((updateTodo.getDescription()));
         }
-        updateTask.setCompleted(todo.getCompleted());
-        updateTask.setCreatedAt(todo.getCreatedAt());
-        todoRepository.save(updateTask);
-        return updateTask;
+        currentTask.setCompleted(updateTodo.getCompleted() ? updateTodo.getCompleted() : currentTask.getCompleted());
+        todoRepository.save(currentTask);
+        return currentTask;
     }
 
     public Boolean validateTodoId(long id){
-        return todoRepository.existsById(id);
+        return todoRepository.findById(id).isPresent();
     }
 
     public Long countOfTodo(){
