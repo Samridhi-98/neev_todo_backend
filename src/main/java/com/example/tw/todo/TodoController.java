@@ -41,8 +41,6 @@ public class TodoController {
     public ResponseEntity<?> addTodo(@Validated @RequestBody Todo todo){
         Long initialCount = todoService.countOfTodo();
 
-        System.out.println("controller add todo: "+ todo);
-
         todoService.addTodo(todo);
 
         if(initialCount + 1 == todoService.countOfTodo() ){
@@ -69,14 +67,9 @@ public class TodoController {
     }
 
     @PutMapping("/updateTodo/{todoId}")
-    public ResponseEntity<?> updateTodo(@PathVariable long todoId, @RequestBody Todo todo) throws TaskDoesNotExistInTheList {
+    public ResponseEntity<?> updateTodo(@PathVariable long todoId, @RequestBody Todo todo){
         try{
-            if(!todoService.validateTodoId(todoId)){
-                throw new TaskDoesNotExistInTheList();
-            }
-
-            Todo currentTask = todoService.getTaskById(todoId);
-            Todo updatedTask = todoService.updateTodo(todoId,todo);
+            todoService.updateTodo(todoId,todo);
 
             return new ResponseEntity<>("Task has been updated successfully", HttpStatus.OK);
         }

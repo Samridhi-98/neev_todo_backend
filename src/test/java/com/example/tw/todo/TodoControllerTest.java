@@ -1,5 +1,7 @@
 package com.example.tw.todo;
 
+import com.example.tw.todo.exceptions.TaskDoesNotExistInTheList;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -74,25 +78,28 @@ public class TodoControllerTest {
     }
 
     @Test
-    public void shouldAbleToAddTheTodo(){
-        Todo task = new Todo(5,"Grocery", "working for 9-5",false);
-//        Mockito.when(todoService.addTodo(task)).then(todo.size() == 5);
+    public void shouldAbleToUpdateTheTodo() throws Exception {
+        Mockito.when(todoService.updateTodo(1L,todo.get(2))).thenReturn(todo.get(2));
 
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .put("/api/v1/todo/updateTodo/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(todo.get(2)));
+
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void shouldAbleToDeleteTheTodo(){
+    public void shouldThrowExceptionIfTodoDoesNotExist() throws Exception {
+        Todo task = new Todo();
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
+                .put("/api/v1/todo/updateTodo/6")
+                .contentType(MediaType.APPLICATION_JSON);
 
-    }
-
-    @Test
-    public void shouldAbleToUpdateTheTodo(){
-
-    }
-
-    @Test
-    public void shouldThrowExceptionIfTodoDoesNotExistToDelete(){
-
+        mockMvc.perform(mockRequest)
+                .andExpect(result -> assertThrows(TaskDoesNotExistInTheList.class, () -> todoService.updateTodo(6L,task)));
     }
 
 }

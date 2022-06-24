@@ -1,5 +1,6 @@
 package com.example.tw.todo;
 
+import com.example.tw.todo.exceptions.TaskDoesNotExistInTheList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,6 @@ public class TodoService {
     public List<Todo> getList(){
         List<Todo> tasks = new ArrayList<>();
         for (Todo todo : todoRepository.findAll()) {
-
-            System.out.println("get todo list: "+ todo);
-
             tasks.add(todo);
         }
         return tasks;
@@ -39,7 +37,10 @@ public class TodoService {
         todoRepository.delete(todo);
     }
 
-    public Todo updateTodo(Long todoId, Todo updateTodo){
+    public Todo updateTodo(Long todoId, Todo updateTodo) throws TaskDoesNotExistInTheList {
+        if(!validateTodoId(todoId)){
+            throw new TaskDoesNotExistInTheList();
+        }
         Todo currentTask = todoRepository.findById(todoId).get();
 
         currentTask.setTitle(updateTodo.getTitle());
